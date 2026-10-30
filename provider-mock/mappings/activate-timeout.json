@@ -1,0 +1,19 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPath": "/provider/v1/activate",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.productCode",
+          "matches": ".*-TIMEOUT$"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "fixedDelayMilliseconds": 10000
+  }
+}

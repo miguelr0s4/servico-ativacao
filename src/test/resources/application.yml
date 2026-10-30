@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:ativacao;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+security:
+  jwt:
+    secret: chave-de-teste-usada-somente-nos-testes-automatizados
+
+provider:
+  base-url: http://localhost:8089
+  connect-timeout: 1s
+  read-timeout: 3s
+  max-tentativas: 5
+  backoff-base: 2s
+  backoff-max: 60s
+  reconciliacao-timeout: 2m
+  worker:
+    enabled: false
+    intervalo: 2s
+    tamanho-lote: 20
+
+resilience4j:
+  ratelimiter:
+    instances:
+      criarSolicitacao:
+        limit-for-period: 1000
+        limit-refresh-period: 1s
+        timeout-duration: 0

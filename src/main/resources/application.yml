@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: servico-ativacao
+
+  threads:
+    virtual:
+      enabled: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ativacao
+    username: ativacao
+    password: ativacao
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+
+server:
+  port: 8080
+  shutdown: graceful
+
+app:
+  max-request-body-bytes: 10240
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:troque-esta-chave-em-cada-ambiente-por-uma-gerada-com-32bytes}
+
+provider:
+  base-url: ${PROVIDER_BASE_URL:http://localhost:8080}
+  connect-timeout: 1s
+  read-timeout: 3s
+  max-tentativas: 5
+  backoff-base: 2s
+  backoff-max: 60s
+  reconciliacao-timeout: 2m
+  worker:
+    enabled: true
+    intervalo: 2s
+    tamanho-lote: 20
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      provider:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+  ratelimiter:
+    instances:
+      criarSolicitacao:
+        limit-for-period: 20
+        limit-refresh-period: 1s
+        timeout-duration: 0
